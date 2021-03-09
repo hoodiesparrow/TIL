@@ -20,7 +20,7 @@ $ cd projectName
 
 $ python manage.py runserver
 
-구동되는 것을 확인한다.
+> 구동되는 것을 확인한다.
 
 
 
@@ -82,6 +82,8 @@ TEMPLATES = [
 
 from django.urls import path**, include**
 
+
+
 `projectName / applicationName / urls.py (create)`
 
 from django.urls import path
@@ -90,9 +92,9 @@ from . import views
 
 > 현재 파일이 있는 디렉토리에서 views를 가져온다.
 
-urlpatterns = [ 
+**urlpatterns** = [ 
 
-​	path('pageName/', views.pageName)
+​	path('**pageName/**', **views.pageName**)
 
 ]
 
@@ -108,5 +110,54 @@ urlpatterns = [
 
 
 
-`projectName / applicationName / templates (create) / pageName`
+`projectName / applicationName / templates (create) / pageName (create)`
 
+{% extends 'base.html' %}
+
+{% block content %}
+
+> 이곳에 개별 내용을 넣는다.
+
+{% endblock content %}
+
+
+
+`projectName / applicationName / views.py`
+
+def **pageName**(request):
+
+somethinginformation = ...
+
+content = {
+
+​	'key': value
+
+}
+
+  return render(request, **'pageName.html'**, content)
+
+> 역시 파일명이므로 따옴표를 붙인다. 데이터를 같이 넘긴다면 content 딕셔너리에 담아 인자로 content만 넘기게 되면 html에서는 간단하게 {{ variableName }} 으로 사용할 수 있다.
+
+
+
+
+
+**# Variable Routing**
+
+`urls.py` 
+
+`path('hello/<str:name>/', views.hello)`
+
+
+
+`views.py` 
+
+`def hello(request, name):`
+
+매개변수의 이름은 `urls.py` 에서 정의한 변수명과 같아야 한다.
+
+`str` 은 기본값으로, 생략가능: `<name>`
+
+정수는 `int` 로 표현 `<int:age>`
+
+> 변수를 매개변수로 만들어서 받아준다.
