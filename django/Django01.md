@@ -161,3 +161,59 @@ content = {
 정수는 `int` 로 표현 `<int:age>`
 
 > 변수를 매개변수로 만들어서 받아준다.
+
+
+
+
+
+**# URL Namespace**
+
+![11](Django01.assets/11.PNG)
+
+`appName / urls.py`
+
+path 함수의 세번째 자리에 name='urlName'의 형태로 작성한다.
+
+경로가 필요한 부분에 `{% url 'urlName' %}` 의 형태로 사용하면 되나,
+
+어플리케이션이 다양해지는 경우 'index' 페이지 같이 흔히 쓰이는 페이지는 동일한 별명이 있을 수 있음.
+
+이러한 경우 어떤 url인지 구별이 힘든 데, 이런 단점을 해결하기 위해서 상단의 `app_name`을 appName과 똑같이 할당해준다.
+
+이렇게 `app_name`을 할당한 뒤에는 
+
+![22](Django01.assets/22.PNG)
+
+이런 식으로 `{% url 'appName:urlName' %}`의 형태로 사용하면 된다. 쌍따옴표 안에서 태그가 시작되는 것에 유의.
+
+
+
+**# Template Namespace**
+
+바로 위의 경우처럼 어플리케이션이 다양해지는 경우 html의 이름이 같은 경우가 생기는데, django는 `projectName / projectName / settings.py / INSTALLED_APPS` 에서 등록된 순서대로 templates 폴더를 탐색하기 때문에 어떤 어플리케이션의 template 파일인지 구분을 할 수 가 없게 된다.
+
+이런 경우 templates 폴더 내부에 해당 어플리케이션 이름으로 폴더를 하나 더 작성하고,![333](Django01.assets/333.PNG)
+
+이렇게 `appName / pathName.html`로 호출하여 다른 어플리케이션의 페이지를 불러오는 것을 방지한다.
+
+
+
+**# ORM**
+
+DB에서 쓰는 SQL과 python은 서로 언어가 달라서 api가 필요한데, django에서는 `ORM`을 사용하여 python과 SQL을 상호간에 번역한다. 
+
+이 `ORM`은 SQL을 잘 알지 못하더라도 DB조작이 가능하고 기존 SQL의 절차적 접근이 아닌 OOP적 접근으로 인한 높은 생산성을 누릴 수 있지만, `ORM`만으로는 완전한 서비스를 구현하기 어려운 경우가 있다는 한계점 또한 가지고 있다.
+
+간단하게 테이블은 field=column=속성, record=row=tuple, 개별 record에 대응하는 각각의 field가 가지는 값, 그리고 필드중 하나인 primary key로 이루어져 있다.
+
+`projectName / appName / models.py`
+
+```python
+class Tablename(models.Model):  # Tablename should be in singular form
+
+    fieldName = models.FieldType(option)
+
+    fieldName = models.FieldType(option)
+```
+
+이렇게 `class`로 appName을 단수형으로 만든 이름을 사용하고, 
