@@ -216,4 +216,193 @@ class Tablename(models.Model):  # Tablename should be in singular form
     fieldName = models.FieldType(option)
 ```
 
-이렇게 `class`로 appName을 단수형으로 만든 이름을 사용하고, 
+이렇게 appName을 단수형으로 만든 이름을 사용하여 `class`를 만들고, 상속을 통해 편리하게 데이터베이스의 스키마를 만들 수 있다.
+
+- `FieldType`은 모두 `upper camel case`로 되어 있는데, 여기서 이 필드 타입들은 결국 `models` 안에 존재하는 클래스라는 것을 알 수 있다.
+
+
+
+**# Migrations**
+
+`projectName / appName / models.py`에서 만든 스키마를 바탕으로, DB설계도처럼 동작하는 SQL구문으로 이루어진 **migration**파일을 생성하기 위해서는 `python manage.py makemigrations`를 터미널에 입력한다.
+
+이 단계에서는 아직 데이터베이스에 해당 변경점이 반영되지는 않고, 다만 그에 대한 정보를 포함하는 migration 파일이 생성된다.
+
+
+
+이후 실제로 migration 파일의 내용을 DB에 반영(`models.py`의 변경사항과 DB의 스키마가 동기화)하기 위해서는  `python manage.py migrate`를 터미널에 입력한다.
+
+이제는 DB에 실제로 변경사항이 반영된다.
+
+
+
+추가 명령어들) 
+
+migration 파일 안에 담겨있는 SQL 구문을 보기 위해서는, `python manage.py sqlmigrate appName 0001`을 입력하는데, 이때 0001은 알고자 하는 migration 파일의 번호를 입력하는 부분이다.
+
+
+
+`migrate` 이후 실제 마이그레이션 여부를 확인하기 위해서는 `python manage.py showmigrations`를 터미널에 입력한다. 이때 [X]로 표기되는 테이블은 반영이 되었다는 표시이므로 혼동하지 말자.
+
+
+
+**# Database API**
+
+ORM에서 제공하는 DB를 조작하기 위한 도구이다. CRUD를 통해서 Database API에 대해서 알아보자.
+
+우선 DB에 데이터를 생성하는 `Create`의 경우, 
+
+![캡처](Django01.assets/캡처.PNG)
+
+3가지의 방법이 존재한다.
+
+첫번째와 두번째 방법의 경우 `article`을 `Article` 클래스(`Article`은 테이블의 이름이기도 하다)의 인스턴스로 만들어 정보를 넣고 저장하는 순서만 다른 방법이고, 세번째 방법은 `create()`라는 메서드를 활용하는 방법이다.
+
+
+
+**# GET vs POST**
+
+GET: 데이터를 조회할 때만 사용
+
+POST: 데이터를 수정, 생성, 삭제할 때 사용하며, `form` 아래에서 `{{ csrf_token }}`구문을 추가하여 CSRF 스크립트 공격을 방지한다. 여태까지는 글을 작성할 때에 `GET` 메서드를 사용했지만, 데이터가 수정되는 모든 경우에는 `POST` 메서드를 사용해야 한다.
+
+
+
+
+
+
+
+**# CRUD**
+
+**CREATE**
+
+- template
+
+```html
+<form action="{% url 'articles:create' %}" method="POST">
+  {% csrf_token %}
+```
+
+- views.py
+
+```python
+def create(request):
+    article = Article()
+
+    title = request.POST.get('title')
+    content = request.POST.get('content')
+
+    article.title = title
+    article.content = content
+    article.save()
+
+    return redirect('articles:detail', article.id)
+```
+
+\# `ariccles:create`로 쿼리(주소에서, ? 이후)에 정보를 담아 보내면, `create` 함수에서 DB에 저장한 후
+
+​	`detail` 페이지를 호출한다.
+
+**# Variable Routing에서, 받는 부분 대신 보내는 부분이다.** (views.py에서)
+
+동시에 variable routing을 위해서 두번째 인자로 `articles.id`를 보내준다.
+
+
+
+​	**+) RETURN vs REDIRECT**
+
+​	`new` 페이지에서 글을 작성(action="`{% url 'articles:create' %}`" method=POST )한 후 
+
+​	작성한 글의 내용을 보여주는 `detail` 페이지로 가고자 한다면,
+
+​	`render`를 통해서는 해당 페이지를 보여 줄 수가 없다. 
+
+​	<이유 추가>
+
+
+
+`detail` 페이지의 `path`는 아래와 같은데,
+
+```python
+path('detail/<int:id>/', views.detail, name='detail')
+```
+
+여기서 variable routing으로 받은 id를 주소로 받아 다시 `views.py `의 `detail `함수에서
+
+```python
+article = Article.objects.get(pk=id)
+```
+
+구문을 통해 id가 같은 인스턴스, 즉 해당하는 글을 가져올 수 있게 된다.
+
+
+
+**READ**
+
+```python
+article = Article.objects.get(pk=id)
+```
+
+\# 위에서 확인한 코드에서 READ를 엿볼 수 있다. `Article` 클래스에 대해서 특정 id를 가지는 유일한 객체를 리턴하는 `.get()` 메서드, `Article` 클래스에 대해 모든 인스턴스를 리턴하는 `.all()` 메서드, 마지막으로 `field lookups` 를 통해 특정 조건을 가지는 객체(0개, 1개, 여러개 가능)를 리턴하는 `.filter()`메서드가 READ에 해당한다.
+
+
+
+**UPDATE**
+
+UPDATE는 CREATE와 많은 공통점을 지닌다. 작동 프로세스를 살펴보자면 우선 객체를 읽어온 후, 변동되는 값을 대입하고 저장한다. CREATE는 신규 객체에 값을 저장하는 반면, UPDATE는 기존 객체를 수정한다는 점이 다르다는 걸 알 수 있다.
+
+`detail` 페이지의 html에서,
+
+```python
+<a href="{% url 'articles:edit' article.id %}">EDIT</a>
+```
+
+​	**# Variable Routing에서, 받는 부분 대신 보내는 부분이다.** (html에서)
+
+​	`url` 태그에서 한 칸을 띄운 다음 보낼 변수명(여기서는 article 인스턴스의 id에 해당하는 값을 담은 변수이다)을 	적고, 한 칸을 다시 띄워 마무리한다.
+
+
+
+역시 `edit`의 `path`를 살펴보면 
+
+```python
+    path('edit/<int:id>/', views.edit, name='edit')
+```
+
+`<int:id>` 구문을 통해 Variable Routing을 주소로 받아주고 있다.
+
+
+
+이후 `views.py`에서도
+
+```python
+def edit(request, id):
+    article = Article.objects.get(pk=id)
+    context = {
+        'article': article,
+    }
+    return render(request, 'articles/edit.html', context)
+```
+
+차근차근 변수를 받아 원하는 값을 가져오는 단계를 훑어볼 수 있다.
+
+
+
+ context로 넘겨준 값에 의해 `edit.html`에서도 
+
+```html
+  <label for="title">TITLE:</label>
+  <input type="text" name="title" id="title" value={{ article.title}}>
+  <label for="content">CONTENT:</label>
+  <textarea name="content" id="content" cols="30" rows="10">{{ article.content }}		   </textarea>
+```
+
+value 태그와 {{ article.content }}변수를 통해 사용자가 이전에 작성했던 값을 미리 채워줄 수 있다.
+
+
+
+**DELETE**
+
+다른 CRU에 비해 DELETE는 간단하게 그 작업이 끝난다.
+
+삭제하고자 하는 인스턴스를 불러온 후, `instanceName.delete()` 메서드를 통해 삭제하면 DB에서 해당 객체는 삭제된다. 만약 id=1인 객체가 삭제된다고 해서 새로이 생성되는 객체가 다시 id=1을 가지지는 않는다는 점에 유의하자.
