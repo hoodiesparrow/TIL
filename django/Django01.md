@@ -406,3 +406,22 @@ value 태그와 {{ article.content }}변수를 통해 사용자가 이전에 작
 다른 CRU에 비해 DELETE는 간단하게 그 작업이 끝난다.
 
 삭제하고자 하는 인스턴스를 불러온 후, `instanceName.delete()` 메서드를 통해 삭제하면 DB에서 해당 객체는 삭제된다. 만약 id=1인 객체가 삭제된다고 해서 새로이 생성되는 객체가 다시 id=1을 가지지는 않는다는 점에 유의하자.
+
+
+
+
+
+
+
+**# FORM**
+
+`articles / forms.py`
+
+```python
+from django import forms
+
+class ArticleForm(forms.form):
+    title = forms.CharField(max_length=20)
+    content = forms.CharField(widget=forms.Textarea)
+```
+
