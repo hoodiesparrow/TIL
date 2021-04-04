@@ -1,4 +1,4 @@
-# Django DB
+# Django table relationship
 
 
 
