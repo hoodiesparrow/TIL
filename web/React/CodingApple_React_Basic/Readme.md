@@ -143,3 +143,26 @@ inline-style 지정시 :
 
 물론 style 내부의 객체도 JS 변수에 할당하여 사용할 수도 있다. 
 
+
+
+## 3. useState()
+
+`function` 내부에 const, let으로 변수를 선언할 수도 있지만, 리액트가 값의 변화에 따라 html를 다시 그릴 수 있도록 하려면 `useState()`를 활용하면 된다.
+
+```react
+import { useState } from 'react'
+...
+
+function App() {
+  let [post, setPost] = useState('자바스크립트 코드 추천')
+  ...
+  
+}
+```
+
+아마도 Vue Composition API의 `reactive`의 원류가 되는 문법이라는 생각이 들었다.
+
+여기서 사용된 `let [var1, var2] = [value1, value2]` 문법은 배열의 요소를 간편하게 할당하는 문법이다. 왜 이렇게 값을 할당하느냐면, `useState(someValue)`는 [someValue, function]으로 이루어진 길이 2의 배열을 리턴하기 때문이다. 두번째 인자에 할당된 함수는 첫번째 인자인 값을 변경할 때 사용된다. react 공식 문서를 보았을 때 보통 setVariableName 식으로 앞에 'set'을 붙여주는 방식이 일반적인 것 같다. 
+
+여기서 변수 대신 쓰는 state에는 문자, 숫자, 배열, 객체 모두 저장이 가능하다. state가 변경되면 html이 자동으로 재 렌더링된다.
+
