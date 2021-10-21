@@ -122,24 +122,22 @@ Vue와 크게 다르지 않은 느낌이지만, 수염태그를 붙여 줘야 �
 inline-style 지정시 :
 
 ```react
-        <div style="{ { color : 'blue' } }">
+        <div style={ { color : 'blue' } }>
           개발 blog
         </div>
 ```
 
 문법상 Object 형식으로 값을 넣어줘야 하므로, 수염 태그를 두번 감싸주는 식이 된다. 
 
-다만 이때
+
+
+다만 이때,
 
 ```react
-<div style="{ { color : 'blue', font-size : '30px' } }">
+<div style={ { color : 'blue', font-size : '30px' } }>
 ```
 
 이런 식으로 작성하게 되면, `-`가 JS의 뺄셈으로 해석되므로 lowerCamelCase 작명을 따라주면 된다. 이 부분은 tailwindcss의 설정을 할 때와 비슷한 원리라는 생각이 들었다.
-
-```react
-<div style="{ { color : 'blue', fontSize : '30px' } }">
-```
 
 물론 style 내부의 객체도 JS 변수에 할당하여 사용할 수도 있다. 
 
@@ -164,7 +162,9 @@ function App() {
 
 여기서 사용된 `let [var1, var2] = [value1, value2]` 문법은 배열의 요소를 간편하게 할당하는 문법이다. 왜 이렇게 값을 할당하느냐면, `useState(someValue)`는 [someValue, function]으로 이루어진 길이 2의 배열을 리턴하기 때문이다. 두번째 인자에 할당된 함수는 첫번째 인자인 값을 변경할 때 사용된다. react 공식 문서를 보았을 때 보통 setVariableName 식으로 앞에 'set'을 붙여주는 방식이 일반적인 것 같다. 
 
-여기서 변수 대신 쓰는 state에는 문자, 숫자, 배열, 객체 모두 저장이 가능하다. state가 변경되면 html이 자동으로 재 렌더링된다.
+여기서 변수 대신 쓰는 state에는 문자, 숫자, 배열, 객체 모두 저장이 가능하다. setState를 사용하면 html이 자동으로 재 렌더링된다.
+
+위의 예제에서 `post = '자바스크립트 코드 추천'` 이런 식으로 한다면 값은 변경되도 html이 다시 렌더링되지 않아 값이 바뀌더라도 바뀌지 않은 것처럼 보이게 된다.
 
 
 
@@ -185,3 +185,34 @@ HTML 태그에서 이벤트 리스너를 달 수 있다. 마찬가지로 `{}` �
 ```
 
 `useState`에서 작성했던 `setLikes()`를 이용해 실제 likes의 값을 변경하면 된다.
+
+
+
+## 5. Proper Way To Change State
+
+배열, 객체타입인 state의 값을 변경할 때에는 
+
+```react
+  function changePost () {
+    const newArray = [...post]
+    newArray[0] = 'JS 코드 추천'
+    setPost(newArray)
+  }
+```
+
+'newArray'를 하나 만들어 카피한 후, 원하는 수정을 거친 후 setter를 통해 state를 변경하는 것이 React의 관습이라고 한다.
+
+
+
+이때,
+
+```react
+const newArray = post
+const newArray = [...post]
+```
+
+첫 줄처럼 적게 되면 당연히 주소 참조를 하므로 이 상태에서 'newArray'를 수정하면 결국 'post'를 수정하는 것과 같다. 그것은 리액트의 원칙인 'immutable data'가 깨지는 것이므로 전개 구문 Spread Operator 를 사용하여 깊은 복사를 해준다. 
+
+- 전개 구문을 사용하게 되면 첫 번째 depth는 주소 참조가 아닌 깊은 복사를 하게 된다.
+  - 참조: [Javascript:Shallow and Deep Copy :: 마이구미 :: 마이구미의 HelloWorld (tistory.com)](https://mygumi.tistory.com/322)
+
