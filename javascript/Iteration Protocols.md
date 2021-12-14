@@ -82,3 +82,40 @@ for (const entry of map.entries()) {console.log(entry)};
 
 
 
+# Custom Iteration Protocols
+
+사용자 정의 이터레이터를 만들어 보자
+
+```js
+const iterable = {
+    [Symbol.iterator]() {
+        let i = 3;
+        return {
+            next() {
+                return i === 0 ? { done: true } : { value: i--, done: false }
+            }
+        }
+    }
+}
+let iterator = iterable[Symbol.iterator]();
+console.log(iterator.next()) //  { value: 3, done: false }
+console.log(iterator.next()) //  { value: 2, done: false }
+console.log(iterator.next()) //  { value: 1, done: false }
+```
+
+정의한 이터레이터는 자바스크립트 객체 내장 이터레이터와 다른 점이 있다.
+
+```js
+const arr = [1, 2, 3]
+const iter2 = arr[Symbol.iterator]()
+console.log(iter2[Symbol.iterator]() == iter2)
+
+iter2.next() // 1
+for (const item of arr) console.log(item) // 2 3
+```
+
+- next()를 호출하고 난 뒤 for of문을 통해 순회했을 때 next()의 결과가 반영된다.
+
+  - 처음에 사용자 정의를 통해 만든 이터레이터는 for of문을 통해 순회하면 처음부터 순회한다.
+
+    이터레이터가 자기 자신 또한 이터러블이면서, 스스로를 리턴했을 때 Well-Formed 이터레이션 프로토콜이라고 한다.
