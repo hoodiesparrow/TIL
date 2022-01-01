@@ -220,3 +220,68 @@ funcs.forEach(function(f) {
 
 - `let`으로 `i`를 선언하게 되면, 블록스코프가 생성되어 for문이 끝난 뒤 함수를 실행하더라도 개별적인 `i`값이 남아 정상적으로 작동하게 된다.
   - 메모리 소모를 덜 할수 있는 환경이 된 것. 클로저 내부의 변수는 계속해서 남아있기 때문.
+
+
+
+### Let과 Const
+
+```js
+let a  // no error
+const a  // Missing initializer in const declaration
+```
+
+- `let`의 경우 선언과 할당을 따로 할 수 있으나, `const`의 경우 선언과 할당을 동시에 해야 함.
+  - 이는 '상수' 라는 개념을 구현한 것이기에 빈 값을 할당하고 다시 할당하고자 하는 값을 할당하지 못하게 하는 것.
+
+```js
+const OBJ = {
+    prop: 1
+}
+OBJ.prop = 2
+
+```
+
+- `OBJ`에는 객체의 주소가 할당되었으므로 다른 객체를 할당할 수는 없지만 해당 객체를 수정할 수 있음.
+
+
+
+참고:
+
+```js
+let a = {
+    prop: 1
+}
+const b = a
+a = 20
+
+console.log(a, b)  // 20, {prop: 1}
+```
+
+- `a`에서 생성된 객체의 주소를 `b`가 참조
+  - `a`에는 숫자 리터럴을 재할당, 이는 `a`가 참조하는 주소가 바뀐 것
+  - `b`는 여전히 같은 객체의 주소를 참조
+
+
+
+### 객체를 상수로
+
+##### Object.freeze()
+
+```js
+const OBJ = {
+    prop: 1,
+    arr: [1, 2, 3],
+}
+Object.freeze(OBJ)
+OBJ.prop1 = 10  // does not emit error(es5)
+console.log(OBJ)
+
+OBJ.arr[1] = 20
+console.log(OBJ)  // prop: 1, [1, 20, 3]
+```
+
+- 객체 내부에서 참조하고 있는 객체는 freeze되지 않음
+  - deep freeze를 하기 위해서는 deep copy와 동일하게 재귀를 이용해야 함.
+
+
+
