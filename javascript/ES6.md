@@ -225,6 +225,10 @@ funcs.forEach(function(f) {
 
 ### Let과 Const
 
+> let은 값의 변경이 필요한 예외적인 경우에 사용
+
+
+
 ```js
 let a  // no error
 const a  // Missing initializer in const declaration
@@ -284,4 +288,35 @@ console.log(OBJ)  // prop: 1, [1, 20, 3]
   - deep freeze를 하기 위해서는 deep copy와 동일하게 재귀를 이용해야 함.
 
 
+
+### var와 전역객체
+
+```js
+var a = 10
+console.log(window.a)  // 10
+console.log(a)  // 10
+delete a  // false
+console.log(window.a)  // 10
+console.log(a)  // 10
+```
+
+- `var`로 변수를 선언하게 되면 전역변수임과 동시에 전역객체의 프로퍼티가 됨
+  - `delete`로 전역객체의 속성인 `a`를 지우려고 해도 전역변수이므로 지워지지 않음
+
+```js
+let c = 10
+console.log(window.c)  // undefined
+console.log(c)  // 10
+delete c  // false => delete는 객체의 속성을 지우는 명령
+
+window.c = 10
+delete c  // true
+```
+
+- `var` <=> `let | const`를 같은 전역변수로 사용하더라도 다르게 동작하는 모습을 확인할 수 있음
+  - `let | const`의 경우 전역객체의 속성이 되지 않음
+
+
+
+### 템플릿 리터럴
 
