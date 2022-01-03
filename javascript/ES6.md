@@ -320,3 +320,50 @@ delete c  // true
 
 ### 템플릿 리터럴
 
+```js
+const linesToHTML = function (characters) {
+  return characters.reduce(function (charactersResult, character) {
+    let {name, lines} = character
+    return `${chractersResult || ''}
+<article>
+  <h1>${name}</h1>
+  <ul>
+    ${lines.reduce(function (linesResult, line) {
+      return `${linesResult} || ''
+      <li>${line}</li>
+      `.trim()})}
+  </ul>
+</article>
+  `.trim()}, 0)
+}
+
+const characters = [{
+  name: 'Aria',
+  lines: ['A girl has no name.']
+}, {
+  name: 'John Snow',
+  lines: [
+    'You know nothing, John Snow.',
+    'Winter is coming.'
+  ]
+}]
+
+document.body.innerHTML = linesToHTML(characters)
+```
+
+- 템플릿 리터럴을 통해 'jsp', 'php', 'handlebars'와 같은 템플릿 언어/엔진/라이브러리의 기능을 구현할 수 있다.
+  - 이때 indentation이 헷갈릴 수 있으므로 `백틱`은 올바른 들여쓰기를 한 후 `trim()`을 이용해 다듬을 수 있다.
+  - 위의 코드에서는 `characters` 객체를 `reduce` 메서드를 활용해 합친 객체 내부의 속성(이름, 대사)들을 스트링 형태의 HTML로 작성했고, `innerHTML`로 문서에 삽입했다.
+
+
+
+```js
+console.log(`${[0, 1, 2]}`)  // 0,1,2
+console.log(`${{a: 1, b: 2}}`) [object object]
+console.log(`${function(){return 1}}`)  // function () {....}
+console.log(`${(() => 1)()}` + 1)  // 11
+```
+
+- 템플릿 리터럴은 `toString()`과 같은 동작을 한다.
+  - 마지막 줄의 즉시실행함수에서 반환된 1은 `toString`을 거쳐 문자열 '1'이 되었고, 암묵적 형변환에 의해 문자열 '11'이 되었다.
+
