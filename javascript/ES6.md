@@ -55,9 +55,9 @@ hasValue(10)  // uncaught error: v is not defined
 ##### ES5
 
  ```js
- (function() {
+ (function () {
    var a = 10
-   (function() {
+   (function () {
      console.log(a)  // undefined
      var a = 20 
    })()
@@ -114,7 +114,7 @@ console.log(obj.value)
 이때 `this`를 넘겨주고자 한다면,
 
 ```js
-  setValue: function() {
+  setValue: function () {
     this.value = 2  // this: obj
     (function () {
       this.value = 3  // this: window
@@ -126,7 +126,7 @@ console.log(obj.value)
 
 ```js
 
-    setValue: function() {
+    setValue: function () {
     this.value = 2  // this: obj
     var self = this
     (function () {
@@ -145,7 +145,7 @@ console.log(obj.value)
 var value = 0
 var obj = {
   value: 1,
-  setValue: function() {
+  setValue: function () {
     let a = 10
     this.value = 2  // this: obj
     {
@@ -168,7 +168,7 @@ console.log(obj.value)
 ```js
 var funcs = []
 for (var i = 0; i < 10; i++) {
-  funcs.push(function() {
+  funcs.push(function () {
     console.log(i)
   })
 }
@@ -190,8 +190,8 @@ funcs.forEach(function(f) {
 ```js
 var funcs = []
 for (var i = 0; i < 10; i++) {
-  funcs.push((function(v) {
-    return function() {
+  funcs.push((function (v) {
+    return function () {
       console.log(v)
     }
   })(i))
@@ -209,11 +209,11 @@ funcs.forEach(function(f) {
 ```js
 let funcs = []
 for (let i; i = 0; i++) {
-  funcs.push(function() {
+  funcs.push(function () {
     console.log(i)
   })
 }
-funcs.forEach(function(f) {
+funcs.forEach(function (f) {
   f()
 })
 ```
@@ -367,3 +367,113 @@ console.log(`${(() => 1)()}` + 1)  // 11
 - 템플릿 리터럴은 `toString()`과 같은 동작을 한다.
   - 마지막 줄의 즉시실행함수에서 반환된 1은 `toString`을 거쳐 문자열 '1'이 되었고, 암묵적 형변환에 의해 문자열 '11'이 되었다.
 
+
+
+### ForEach
+
+for문과 크게 다르지 않음
+
+```js
+const arr = [1, 2, 3]
+arr.forEach(function (val, idx, thisArg) {
+    console.log(val, idx, thisArg)  
+}, 'this becomes this')
+// 1 0 'this becomes this'
+// 2 1 'this becomes this'
+// 3 2 'this becomes this'
+```
+
+- `arr.forEach(callback(currentvalue[, index[, array]])[, thisArg])`
+
+
+
+### Map
+
+배열을 순회하여 새로운 배열을 만드는 목적
+
+```js
+const arr = [1, 2, 3]
+const b = arr.map(function (val, idx, thisArg) {
+    return val[idx] * 2
+}, 'thisArg')
+console.log(b)  // [2, 4, 6]
+```
+
+- `arr.map(callback(currentValue[, index[, array]])[, thisArg])`
+- 순회하며 반환된 값을 모아 배열로 만들기에 return이 필수
+
+
+
+### Reduce
+
+배열을 순회하며 값을 누적하는 등 다른 무언가를 만드는 목적
+
+```js
+const arr = [1, 2, 3]
+const res = arr.reduce(function (pre, cur, idx) {
+    return pre + cur
+}, 0)
+console.log(res)  // 6
+```
+
+- ```
+  arr.reduce(callback[, initialValue])
+  ```
+
+  - 콜백은 필수인자인 `이전 값`, `현재 값`과 인덱스, 배열인자를 받음
+  - 메서드에 `initialValue` 인자를 넘겨주지 않으면 원래 인덱스 0번이 초기값이 되며, 원래 인덱스 1번이 0번으로 시작
+
+- 순회하며 값을 누적해야 하므로 return이 필수
+
+
+
+```js
+const arr = ['a', 'b', 'c']
+const obj = arr.reduce(function (res, item) {
+    res[item] = item
+    return res
+}, {})
+console.log(obj)  // {a: 'a', b: 'b', c: 'c'}
+```
+
+- 객체, 문자열, 숫자 등 편리한 사용 가능
+
+
+
+### Template Tag Function
+
+```js
+const tag = function (strs, arg1, arg2) {
+    return {strs: strs, args: [arg1, arg2]}
+}
+const res = tag `이건 ${1} 태그함수 ${2}`
+console.log(res)
+
+// {
+//  	strs: ["이건 ", "태그함수 ", ""],
+//      args: [1, 2]
+// }
+```
+
+- 함수명 뒤에 템플릿 리터럴을 작성하면(띄어쓰기는 상관없음) 해당 리터럴을 인자로 함수를 호출 => 괄호 대신 템플릿 리터럴을 작성하는 것
+
+  - 이때 백틱과 표현식 사이, 표현식과 표현식 사이에 있는 문자열은 배열에 담아져 첫 번째 인자로 들어감
+
+    - 사이가 빈 공간이여도 빈 문자열로 배열에 담아지므로, 항상 문자열 배열의 길이가 표현식 배열보다 1만큼 더 길다
+
+  - 개별 표현식들은 순서대로 2번째 인자, 3번째 인자, n + 1 번째 인자로 들어감
+
+    
+
+```js
+const setDecimalSeperators = function (strs, ...args) {
+    return args.reduce((p, c, i) => {
+        return p + strs[i] + (c + '').replace(/\d{1, 3}(?=(\d{3})+(?!\d))/g, '$&,')
+    }, '') + strs[strs.length - 1]
+}
+const res = setDecimalSeperators `이 사과는 하나에 ${2000}원이고, 총 ${1234567}개를 구입하시면 총 ${2000 * 1234567}원입니다.`
+console.log(res)
+```
+
+- 태그 함수를 활용하여 표현식으로 나타난 숫자들을 정규식으로 3자리마다 콤마를 찍어주는 코드이다.
+  - 끝의 `+ strs[strs.length - 1]`는 리듀스 결과물이 포함하지 못하는 마지막 스트링을 더해준다.
