@@ -80,8 +80,7 @@ if (true) {
   - 이는 `var`|`let`|`const `모두 hoisting이 된다는 뜻
   - 하지만 `var`는 추가적으로 `undefined`를 할당하지만 `let`과 `const`는 값을 할당하지 않음
     - 즉 `let`과 `const`는 호이스팅 되더라도 선언만 되고 할당은 되지 않음 => TDZ
-
-
+      -  호이스팅 되었을 때 참조할 메모리가 할당되지 않았다는 뜻 <=> `var`의 경우 메모리가 호이스팅 되었을 때 메모리가 할당된다.
 
 ### This
 
@@ -477,3 +476,77 @@ console.log(res)
 
 - 태그 함수를 활용하여 표현식으로 나타난 숫자들을 정규식으로 3자리마다 콤마를 찍어주는 코드이다.
   - 끝의 `+ strs[strs.length - 1]`는 리듀스 결과물이 포함하지 못하는 마지막 스트링을 더해준다.
+
+
+
+##### String.raw
+
+태그함수를 호출했을 때 `args`, `strs` 외에도 `raw`라는 프로퍼티가 하나 더 추가되어 있는데, 이것은 `\n` 이 줄바꿈으로 변환되어 나타나는 `strs`와 다르게 원래의 `\n`로 나타내는 등 입력된 문자열이 그대로 담겨져 있는 배열이다.
+
+`String.raw`를 태그함수로 호출할 수도 있다.
+
+```js
+String.raw `스트링 ${1} \n\n`
+// '스트링 1 \\n\\n'
+```
+
+
+
+### Parameter
+
+##### Default Parameter
+
+```js
+const f = (x, y, z) => {
+    x = x !== undefined ? x : 4
+    y = typeof y !== 'undefined' || 5
+    if (!z) z = 6;
+    console.log(x, y, z)
+}
+f(0, null)
+// 0 true 6
+```
+
+- 기존 매개변수 처리법
+
+
+
+```js
+const f = (x = 4, y = 5, z = 6) => {
+    console.log(x, y, z)
+}
+f(0, null)
+// 0 null 6
+```
+
+- falsy한 값도 `undefined` 또는 `누락된 값`이 아니라면 입력된 값이 사용된다.
+
+- `let`선언과 비슷하게 동작하므로 표현식을 할당할 수 있다. (함수 호출도 가능)
+
+  ```js
+  function a (a = 1, b = c + 1, c = 3) {
+      console.log(a, b, c)
+  }
+  a(1, undefined, 3)
+  // 순서에 신경써야 함
+  ```
+
+  - 순서에 신경써야 한다는 것은 `let`선언처럼 동작하기 때문이며, TDZ에 걸린다는 뜻
+
+    참조)
+
+    ```js
+    let a = a
+    // reference error
+    
+    1) let a  // no mem alloc
+    2) a?
+    3) reference error
+    ```
+
+    자신을 할당했을 때 에러가 나는 순서
+
+    - `let a`가 호이스팅됨
+    - 우변의 `a`를 찾으나 호이스팅된 좌변의 `a`는 아직 메모리가 할당되지 않음
+    - 참조할 수 있는 메모리가 없으니 레퍼런스 에러 발생
+
