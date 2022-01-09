@@ -550,3 +550,88 @@ f(0, null)
     - 우변의 `a`를 찾으나 호이스팅된 좌변의 `a`는 아직 메모리가 할당되지 않음
     - 참조할 수 있는 메모리가 없으니 레퍼런스 에러 발생
 
+
+
+##### Rest Parameter
+
+```js
+function f (x, y, ...z) {
+    console.log(z)
+}
+f(1, 2, true, null, undefined, 10)
+// [true, null, undefined, 10]
+```
+
+- es5의 `arguments`를 대체하는 문법
+  - 유사배열객체였던 `arguments`와 달리 배열임
+    - 유사배열객체: key가 0, 1, 2 ...로 구성되어 배열처럼 쓸 수 있는 객체
+  - 나머지 인자이기에 당연히 마지막 파라미터로 와야 함
+  - 정해진 파라미터 이외의 파라미터가 입력되지 않으면 빈 배열
+
+- setter에서 사용할 수 없음
+  - setter는 객체의 속성 하나의 값을 설정하기 위한 것으로, 인자가 하나만 있어야 함
+
+
+
+##### Spread Operator
+
+```js
+// es5
+var birds = ['eagle', 'sparrow']
+var mammals = ['rabbit', 'cat']
+var animals = birds.concat('whale').concat(mammals)
+
+// es6
+const animals = [...birds, 'whale', ...mammals]
+```
+
+- iterable한 모든 데이터를 펼칠 수 있다.
+
+
+
+```js
+console.log(Math.max(10, 20, 30))  // Math.max에는 배열을 직접 쓸 수 없다
+
+const values = [10, 20, 30]
+console.log(Math.max.apply(null, values))  // 따라서 apply를 활용했지만
+console.log(Math.max(...values))  // es6의 spread operator 활용
+```
+
+
+
+```js
+let originalArr = [2, 3]
+const preArr = [-2, -1]
+const sufArr = [6, 7]
+
+originalArr.unshift(1)
+originalArr.push(4)
+originalArr = [0, ...originalArr, 5]
+```
+
+- `push, unshift, concat` 등의 기능을 대체할 수 있다.
+
+
+
+```js
+let originalArr = [{
+    first: 'Hello',
+    second: 'World!',
+}, {
+    first: 'Welcome',
+    second: 'ES6!'
+}]
+let copiedArr = [...originalArr]
+console.log(originalArr === copiedArr)  // false
+
+copiedArr[0].first = 'Hi,'
+console.log(originalArr[0].first)  // 'Hi,'
+```
+
+- 원본 객체의 주소값을 복사하지 않는다. (새로운 배열/객체이다.)
+  - 하지만 얕은 복사만을 수행한다.
+    - 즉 원본 객체 내부에 다른 객체가 존재할 경우, 해당 객체의 주소값을 참조한다.
+
+
+
+### Enhanced Object
