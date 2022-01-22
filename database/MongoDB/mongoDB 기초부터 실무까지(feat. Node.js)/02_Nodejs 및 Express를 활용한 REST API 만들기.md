@@ -1,72 +1,45 @@
-MongoDB Atlas (cloud) 
+`$ npm init`
 
-- tutorial project 생성
-  - freetier cluster 생성
-    - ip / user 설정 (admin/gyfhUCt8q8BwFjIK)
-  - MongoDB Compass 다운로드
-    - connection string을 사용하여 DB에 연결
-    - Compass 좌하단의 MongoSH 쉘을 사용
+`express` 설치
+
+`nodemon` 사용
 
 
 
-# Create
+# API 만들기
 
-첫 db의 이름은 `test`
+```js
+const express = require('express')
+const app = express()
 
-`> use blog` : blog db로 전환 / 이때 db가 생성되지 않으며 데이터가 쓰일 때 db가 자동으로 생성됨
+app.get('/user', (req, res) => {
+  return res.send({users: []})
+})
 
-`> db.users.insertOne({ name: "Dongyun Kim", email: "hoodiesparrow@gmail.com"})` 
+app.listen(3000, () => console.log('server listening on port 3000'))
+```
 
-- 새로고침시 `blog` 데이터베이스와 내부에 `users` 라는 컬렉션이 생성된 것을 볼 수 있음
-
-- 이름과 이메일만 입력했지만, `_id` 속성으로 키가 생성된 것을 볼 수 있음. MongoDB에서 자체적으로 부여하는 키이며, RDB에서의 PK와 비슷
-
-  ![캡처](01_MongoDB 맛보기.assets/캡처.PNG)
-
-  - `db.users.insertOne({ name: { first: "Elon", last: "Musk" }})` 
-    - Schemaless : 미리 짜여진 스키마에 맞게 데이터를 입력하는 RDB와 다르게, 데이터의 형태가 정해져 있지 않음
-
-
-
-Note: JSON과 비슷한 형태지만 성능이 개선된 BSON을 사용
+- `app` 뒤의 메서드는 http 메서드
+  - `req` 에는 요청받은 데이터가 들어있음
+  - 응답은 `res` 인자의 `send` 메서드 활용
 
 
 
-# Update
+```js
+...
+const users = []
 
-`> db.users.updateOne({ name: "Dongyun Kim" }, { $set: { age: 30 } })`
+app.post('/user', (req, res) => {
+  users.push({name: req.body.name, age: req.body.age})
+  return res.send(true)
+})
+...
+```
 
-- 인자를 두개 받으며, 앞의 인자는 Select의 역할을, 뒤의 인자는 수정할 내용에 대한 정보를 담는다
+![1](02_Nodejs 및 Express를 활용한 REST API 만들기.assets/1-16427711252891.PNG)
 
-`> db.users.findOne({ name: "Dongyun Kim"})` 을 통해 추가된 age를 확인할 수 있다
+`/user` POST 엔드포인트를 만들어두고 이런 요청을 보내게 되면, `TypeError: Cannot read property 'name' of undefined` 라는 에러를 출력한다.
 
-##### Nested Document
-
-`> db.users.updateOne({ "name.first": "Elon" }, { $set: { "name.last": "musk2" } } )`
-
-- 크게 다른 점은 없지만, 뎁스가 있어서 `.`을 붙일 때는 `""`를 붙이는 점에 유의 (SyntaxError)
-
-
-
-##### With ObjectID
-
-강의에서는 `db.users.findOne({ _id: ObjectId("61ea6d32cbc0d6264f5dac51") })` 구문을 입력했을 때 오류가 났지만, 버전이 달라서 그런지 문제없이 작동했다.
-
-다만 `let objectId = require('mongodb').ObjectID` 구문을 터미널에 입력해서 해결했는데, 자바스크립트로 돌아가고 있다는 걸 볼 수 있었다.
-
-`db.users.updateOne({ _id: ObjectId("61ea6d32cbc0d6264f5dac51") }, {$inc: { age: 1} })`
-
-- ID로 접근하여 수정/$inc로 1 증가
-
-
-
-# Delete
-
-`db.users.deleteOne({ _id: ObjectId("61ea6d32cbc0d6264f5dac51") })`
-
-
-
-## 데이터베이스 구조
-
-- SQL 기반 데이터베이스에서의 테이블 => Collection
-- row (tuple) => Document
+- 당연히 파싱되지 않은 JSON이므로 제대로 데이터가 들어있는 객체가 아님. 
+  - `express`의 미들웨어를 통해 편리하게 파싱 가능
+  - `app.use(express.json())` 어디선가 많이 본 것 같은 `app.use`를 통해 미들웨어를 등록할 수 있다.
