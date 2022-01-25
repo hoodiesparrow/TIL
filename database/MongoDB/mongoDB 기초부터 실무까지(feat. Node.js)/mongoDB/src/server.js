@@ -1,7 +1,6 @@
 const express = require('express')
 const app = express()
-const { userRouter } = require('./routes/userRoute')
-const { blogRouter } = require('./routes/blogRoute')
+const { userRouter, blogRouter } = require('./routes')
 const mongoose = require('mongoose')
 const MONGO_URI = 'mongodb+srv://admin:gyfhUCt8q8BwFjIK@mongodbtutorial.wuvui.mongodb.net/BlogService?retryWrites=true&w=majority'
 

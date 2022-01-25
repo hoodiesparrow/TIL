@@ -1,9 +1,11 @@
 const { Router } = require('express')
-const res = require('express/lib/response')
+const { append } = require('express/lib/response')
 const { isValidObjectId } = require('mongoose')
 const blogRouter = Router()
-const { Blog } = require('../models/Blog')
-const { User } = require('../models/User')
+const { Blog, User } = require('../models')
+const { commentRouter } = require('./commentRoute')
+
+blogRouter.use('/:blogId/comment', commentRouter)
 
 blogRouter.post('/', async(req, res) => {
   try {
@@ -75,7 +77,16 @@ blogRouter.put('/:blogId', async(req, res) => {
 
 blogRouter.patch('/:blogId/live', async(req, res) => {
   try {
+    const { blogId } = req.params
+    if (!isValidObjectId(blogId))
+      return res.status(400).send({ error: 'blog ID is invalid' })
 
+    const { isLive } = req.body
+    if (typeof isLive !== 'boolean')
+      return res.status(400).send({ error: 'isLive must be a boolean' })
+
+    const blog = await Blog.findByIdAndUpdate(blogId, { isLive }, { new: true })
+    return res.send({ blog })
   } catch(err) {
     console.log(err)
     return res.status(500).send({ error: err.message })
