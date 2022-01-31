@@ -153,14 +153,53 @@ Next.js는 `styled-jsx`라는 CSS in JS 라이브러리가 내장되어 있는�
 <style jsx>{`
 	.container {
 	min-height: 100vh;
-  …
+  	…
 `}</style>
 ```
 
 라이브러리 사용법은 템플릿 리터럴 내부에 CSS를 작성하는 형식으로, 타 CSS in JS 라이브러리와 크게 다르지 않은 것 같다. 
 
+- [vercel/styled-jsx: Full CSS support for JSX without compromises (github.com)](https://github.com/vercel/styled-jsx)
 
 
 
+### Writing and Importing CSS
 
-Next.js는 CSS와 Sass를 빌트인 지원한다. 
+Next.js는 CSS와 Sass를 빌트인 지원하므로, `.css`와 `.scss` 파일을 import 할 수 있다. 또한 Tailwind CSS같은 유명한 CSS 라이브러리들도 지원된다.
+
+
+
+### Layout Component
+
+```js
+// @components/layout.js
+
+import styles from './layout.module.css'
+
+export default function Layout({ children }) {
+  return <div className={styles.container}>{children}</div>
+}
+```
+
+```css
+// @components/layout.module.css
+    
+.container {
+  max-width: 36rem;
+  padding: 0 1rem;
+  margin: 3rem auto 6rem;
+}
+```
+
+CSS module을 이용해 React Component를 작성했다.
+
+- [Basic Features: Built-in CSS Support | Next.js (nextjs.org)](https://nextjs.org/docs/basic-features/built-in-css-support#adding-component-level-css)
+- HTML 태그의 클래스명의 마지막에 unique한 값이 들어가므로 중복된 클래스명에 대해서 걱정할 필요는 없다.
+- Next.js의 code splitting은 CSS 모듈에도 작동한다. 또한 **빌드 타임**에 번들에서 추출되어 `.css` 파일을 생성한 후 Next.js에 의해 자동으로 로드된다.
+
+
+
+### Global Styles
+
+
+
