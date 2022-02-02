@@ -201,5 +201,173 @@ CSS module을 이용해 React Component를 작성했다.
 
 ### Global Styles
 
+전역 CSS 파일을 쓰기 위해서는 `pages/_app.js` 라는 컴포넌트를 생성해야 한다. 
+
+```js
+export default function App({ Component, pageProps }) {
+  return <Component {...pageProps} />
+}
+```
+
+이 `App` 컴포넌트는 다른 페이지에도 공통적으로 적용되는 최상위 컴포넌트이며, state를 저장하거나 전역 CSS를 적용하는 등에 사용할 수 있다.
 
 
+
+### Adding Global CSS
+
+전역 CSS 파일은 경로와 이름이 정해져 있지는 않지만, `App` 컴포넌트에서만 import할 수 있다.
+
+```js
+import '../styles/global.css'
+```
+
+ 
+
+### Polishing Layout
+
+다큐먼트에서 제공되는 코드를 이용해 `Index`와 `First-post` 페이지에서 사용할 `Layout` 컴포넌트를 다듬고, 두 페이지의 구성을 수정했다.
+
+- ```js
+  export default function Home() {
+    return (
+      <Layout home>
+  ```
+
+  - 이런 코드가 있었는데 `Home`에서 렌더링 될 때에는 true로, `First-post`에서는 undefined로 잡혔다. 
+
+
+
+### Styling Tips
+
+` classnames` 라이브러리를 통해 
+
+```js
+import styles from './alert.module.css'
+import cn from 'classnames'
+
+export default function Alert({ children, type }) {
+  return (
+    <div
+      className={cn({
+        [styles.success]: type === 'success',
+        [styles.error]: type === 'error'
+      })}
+    >
+      {children}
+    </div>
+  )
+}
+```
+
+위와 같이 특정 속성의 변경에 따라 특정 엘리먼트의 css class를 변경할 수 있다.
+
+물론 아래와 같이 다양한 방법이 존재하니 편한 방법으로 하면 될 것 같다.
+
+```js
+    <div className={name === 'HoodieSparro' ? styles.container : 'hi' }>
+```
+
+
+
+### Customizing PostCSS Config
+
+기본값으로 Next.js는 PostCSS로 CSS를 컴파일한다. 루트에 `postcss.config.js` 파일을 생성해서 PostCSS의 설정을 만질 수 있는데, Tailwind CSS 같은 라이브러리를 사용할 때 유용하다. 지금은 넘어가도록 하겠다.
+
+- https://postcss.org/
+- [Styling Tips - Assets, Metadata, and CSS | Learn Next.js (nextjs.org)](https://nextjs.org/learn/basics/assets-metadata-css/styling-tips)
+
+
+
+# Pre-rendering and Data Fetching
+
+### Pre-rendering
+
+기본값으로 Next.js는 모든 페이지를 미리 렌더링한다. 즉, 클라이언트 측 자바스크립트로 HTML을 생성하는 것이 아니라, 미리 각 페이지의 HTML을 생성한다는 것이다. 이는 더 빠른 성능과 좋은 [SEO](https://en.wikipedia.org/wiki/Search_engine_optimization)로 이어질 수 있다. 또한 페이지가 로드될 때 **Hydration**을 통해 HTML과 최소한의 자바스크립트 코드가 합쳐져 정상적으로 반응하는 페이지를 구성한다.
+
+
+
+### Two Forms of Pre-rendering
+
+- ##### [Static Generation](https://nextjs.org/docs/basic-features/pages#static-generation-recommended)
+
+  - **빌드 타임**에 HTML이 생성되며 해당 HTML은 매 요청마다 재활용된다.
+
+- ##### [Server-side Rendering](https://nextjs.org/docs/basic-features/pages#server-side-rendering)
+
+  - **매 요청**마다 HTML을 생성한다.
+
+> Development mode (`npm run dev`)에서는 Static Generation과 상관없이 모든 페이지가 항상 Server-side Rendering 방식으로 동작한다.
+
+- ##### Per-page Basis
+
+  - 한 앱에서 Static Generation과 Server-side Rendering을 페이지마다 다르게 사용할 수 있다.
+
+
+
+### Static Generations with and without Data
+
+데이터를 받아올 필요가 없는 페이지들은 자동적으로 Static Generation이 적용된다. 하지만 데이터가 필요한 정적인 페이지들이 있을 수 있는데, `getStaticProps`를 사용하면 된다.
+
+
+
+### Static Generation with Data using `getStaticProps`
+
+```js
+export default function Home(props) { ... }
+
+export async function getStaticProps() {
+  // Get external data from the file system, API, DB, etc.
+  const data = ...
+
+  // The value of the `props` key will be
+  //  passed to the `Home` component
+  return {
+    props: ...
+  }
+}
+```
+
+async 함수 `getStaticProps`를 이용해 Next.js에 필요한 데이터를 알려주면 된다. 리턴된 props는 `Home` 컴포넌트의 props로 보내진다.
+
+
+
+### Implement getStaticProps
+
+실제 블로그 글 데이터를 md파일로 작성 후 불러오는 식으로 예제를 진행한다. `gray-matter` 라이브러리를 이용해 YAML Front Matter (title 등) 읽을 것이다.
+
+파일 시스템에서 블로그 글을 읽어오는 `lib/posts.js` 모듈을 만든 후, `index`에서 `getStaticProps`를 이용해 블로그 글들을 출력한다.
+
+
+
+### Fetch External API or Query Database
+
+예제는 파일 시스템을 이용했지만, API 엔드포인트 또는 데이터베이스 쿼리를 직접 날리는 것도 가능하다. `getStaticProps`는 결국 서버에서만 실행되므로, 데이터베이스 또한 접근이 가능한 것이다. 심지어 클라이언트 측의 자바스크립트 번들에는 포함되지도 않는다는 것을 기억하자.
+
+- 또한 Incremental Static Regeneration, getStaticPath 등 상황에 맞는 활용법에 대한 고민이 필요하다.
+- [Data Fetching: Overview | Next.js (nextjs.org)](https://nextjs.org/docs/basic-features/data-fetching/overview#getstaticpaths-static-generation)
+
+
+
+### Fetching Data at Request Time
+
+매 요청마다 데이터를 받아와야 할 때의 접근법은 서버 또는 클라이언트 어느 곳에서 데이터를 받을 것인지에 따라 갈리게 된다.
+
+- ##### Server Side Rendering Using `getServerSideProps` : 서버에서 데이터를 받아오기
+
+  ```js
+  export async function getServerSideProps(context) {
+    return {
+      props: {
+        // props for your component
+      }
+    }
+  }
+  ```
+
+  - `getServerSideProps` 를 이용한다. [서버 응답 시간(TTFB)](https://web.dev/time-to-first-byte/)은 CDN에 캐시되지 않으며 서버의 계산 시간이 있으므로 앞서 다룬 방법보다 느리다.
+    - 이로 인해 pre-render가 필요할 때에만 사용하는 것이 좋다.
+  - `context` 프롭 내부에 요청 관련 파라미터들이 들어있다.
+
+  
+
+- ##### Client-side Rendering
