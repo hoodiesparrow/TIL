@@ -1,0 +1,23 @@
+{
+  "name": "graphql-start",
+  "version": "1.0.0",
+  "description": "> [GraphQL tutorial for beginners from the basics of graph-ql in one-video. - YouTube](https://www.youtube.com/watch?v=dJjP0SbdIt0)",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.25.0",
+    "express": "^4.17.2",
+    "express-graphql": "^0.12.0",
+    "graphql": "^16.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
