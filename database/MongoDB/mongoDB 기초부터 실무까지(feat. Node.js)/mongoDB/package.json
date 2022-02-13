@@ -6,15 +6,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon --ignore client.js src/server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.25.0",
     "express": "^4.17.2",
     "mongoose": "^6.1.7"
   },
   "devDependencies": {
+    "faker": "^5.5.3",
     "nodemon": "^2.0.15"
   }
 }
