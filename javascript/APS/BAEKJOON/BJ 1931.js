@@ -22,20 +22,32 @@ for (let i = 1; i <= N; i += 1) {
 const keys = Object.keys(meetings)
 const length = keys.length
 let idx = 0
-let candidate = 0
-while (idx < length - 1) {
-  candidate = min(meetings[keys[idx]])
-  if (candidate < parseInt(keys[idx + 1])) {
-    answer += 1
-    idx += 1
-    continue
-  }
+let currentMin = 0
 
-  const nextCandidate = min(meetings[keys[idx + 1]])
+console.log(length)
+
+while (idx < length - 1) {
+  currentMin = Math.min(meetings[keys[idx]])
+  // if (currentMin < parseInt(keys[idx + 1])) {
+  //   answer += 1
+  //   continue
+  // }
+
+  while (currentMin > parseInt(keys[idx + 1])) { // 시간 모자라면 -1
+    let candidate = Math.min(meetings[keys[idx + 1]])
+    if (currentMin > candidate) {
+      currentMin = candidate
+    }
+    if (idx + 1 < length - 1) {
+      idx += 1
+    } else {
+      break
+    }
   }
+  answer += 1
 }
 
-console.log(calculate(answer))
+console.log(answer)
 
 /*
   풀이중
