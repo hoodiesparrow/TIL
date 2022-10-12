@@ -2,68 +2,21 @@
 
 매일매일 끈기있게 성장하기
 
-
-
-### 2022년의 목표
-
-JS 깊이 더하기
-
-러스트와 자바스크립트로 APS, 자료구조 학습 꾸준히 진행하기
-
-CS공부로 기초 다지기
-
-깃헙 블로그 꾸며보기
+[If you want to know about me](https://www.notion.so/a3f144be73254ddba3924d70def94180)
 
 
 
-### 2022년 4월
+### 2달 일찍 시작하는 신년 목표
 
-입사하고 두달간 일하는 데에 집중하다 보니 공부할 엄두가 별로 나지 않았다.
+일을 시작하며 찔끔찔끔, 연속되지 않고 산발적으로만 공부를 했었던 것 같다. 더군다나 회사에 개발 공부를 같이 할 사람이 없어 더욱 공부를 이어가는 게 힘이 들었는데, 결국에는 의지가 부족한 것에 대한 변명이라는 생각이 들었다.
 
-회사에서 같이 스터디 할 사람이 없어서 차일피일 미뤄오기도 했던 것 같다.
+오늘은 10월 12일이다. 아직 새해가 밝기에는 날이 많이 남았지만, 새롭게 다짐을 한다는 느낌으로 신년 목표을 짜 보았다.
 
-하지만 스터디 할 사람이 없다는 것은 결국 핑계가 아닐까?
+- 아침 6:30 기상, 운동하기
+- 매일매일 풀 심기
+  - 밀린 인프런 강의 학습
+  - 책 읽기
+- 한달 주기로 Readme 정리 후 `journal`에 백업 및 트래킹하기
 
-우선 부트캠프 때부터 흥미가 있었던 러스트를 배워보면서 매일 공부하는 습관을 길러보기로 했다.
+사실 아침에 일어나 운동하기는 지난 달부터 실천하고 있었다. 일단 몸을 움직이기 시작해야 마음도 생긴다고 해야 할까, 그 덕분인지 매일 풀 심기도 꾸준히 할 수 있을 거라는 생각이 든다.
 
-
-
-프로그래밍에서 가장 중요한 건 포기하지 않는 것이라는 글을 지나가며 봤는데, 가슴에 참 와닿았다. 물론 목표를 달성하는 데에는 여러 방법이 있으니 하나의 방법에 매몰되지 말고 숲을 보며 목표의 달성을 포기하지 않는 것이 중요할테다.
-
-
-
-### 학습 예정
-
-[Namaste JavaScript 🙏 Course - JS Video Tutorials by Akshay Saini - YouTube](https://www.youtube.com/watch?v=pN6jk0uUrD8&list=PLlasXeu85E9cQ32gLCvAvr9vNaUccPVNP)
-
-[Javascript ES6+ 제대로 알아보기 - 초급 - 인프런 | 강의 (inflearn.com)](https://www.inflearn.com/course/ecmascript-6-flow#curriculum)
-
-[Javascript ES6+ 제대로 알아보기 - 중급 대시보드 - 인프런 | 강의 (inflearn.com)](https://www.inflearn.com/course/es6-2/dashboard)
-
-[함수형 프로그래밍과 JavaScript ES6+ 대시보드 - 인프런 | 강의 (inflearn.com)](https://www.inflearn.com/course/functional-es6/dashboard)
-
-
-
-
-
-[만들고 비교하며 학습하는 리액트 (react) 대시보드 - 인프런 | 강의 (inflearn.com)](https://www.inflearn.com/course/만들면서-학습하는-리액트/dashboard)
-
-- 리액트 기초 다지기
-
-
-
-[프론트엔드 개발자를 위한, 실전 웹 성능 최적화(feat. React) - Part. 1 - 인프런 | 강의 (inflearn.com)](https://www.inflearn.com/course/웹-성능-최적화-리액트-1)
-
-- 웹 성능 최적화 공부하기
-
-
-
-[Next.js by Vercel - The React Framework (nextjs.org)](https://nextjs.org/)
-
-- Next.js를 활용한 토이 프로젝트 해보기
-
-
-
-[프론트엔드에서의 시큐어 코딩 | 모인 기술 블로그 (themoin.github.io)](https://themoin.github.io/2020-11-02-SecureFrontend/)
-
-[프론트엔드 개발자를 위한 10가지 보안 관련 팁 - Yohan's Developer Diary (yohanpro.com)](https://yohanpro.com/posts/front-end-security)
