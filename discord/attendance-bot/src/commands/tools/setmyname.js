@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js')
+const User = require('../../schemas/User')
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -10,17 +11,23 @@ module.exports = {
         .setRequired(true)
     ),
   async execute(interaction, client) {
-    const { options } = interaction
-    const username = options.getString('username')
-    console.log(username)
+    const { options, user: { id: discordId } } = interaction
+    const name = options.getString('name')
 
-    const message = await interaction.deferReply({
+    await interaction.deferReply({
       fetchReply: true,
+      ephemeral: true,
     })
 
-    const newMessage = `API Latency: ${client.ws.ping}\nClient Ping: ${message.createdTimestamp - interaction.createdTimestamp}`
+    await User.updateOne(
+      { discordId },
+      { $set: { name } },
+      { upsert: true },
+    )
+
+    const content = `이름을 ${name}으로 수정했어`
     await interaction.editReply({
-      content: newMessage
+      content,
     })
   }
 }
