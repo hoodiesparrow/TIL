@@ -17,13 +17,14 @@ module.exports = {
     // 주제 비어있을때 처리
     let content = ''
 
+    console.log(subject) // null
     const user = await User.findOne({ discordId }, { name: 1 })
     if (!user) {
       content = '먼저 이름을 등록해! /setmyname'
       ephemeral = true
     }
 
-    const studying = await Studying.findOne({ discordId })
+    const studying = await Studying.findOne({ discordId, onAir: true })
     if (studying) {
       content = '이미 공부를 시작했어!'
       ephemeral = true
@@ -35,6 +36,8 @@ module.exports = {
         name,
         subject,
         discordId,
+        onAir: true,
+        createdAt: new Date().toISOString(),
       }).save()
   
       content = '공부 시작!'

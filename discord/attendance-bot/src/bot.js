@@ -1,3 +1,5 @@
+process.env.TZ = 'Asia/Seoul'
+
 require('dotenv').config()
 const { TOKEN, DBTOKEN } = process.env
 const { Client, Collection, GatewayIntentBits } = require('discord.js')
@@ -24,3 +26,5 @@ client.login(TOKEN);
 (async () => {
   await connect(DBTOKEN).catch(console.error);
 })();
+
+console.log(new Date().toISOString())
