@@ -17,16 +17,16 @@ module.exports = {
     // 주제 비어있을때 처리
     let content = ''
 
-    console.log(subject) // null
+    // console.log(subject) // null
     const user = await User.findOne({ discordId }, { name: 1 })
     if (!user) {
-      content = '먼저 이름을 등록해! /setmyname'
+      content = '먼저 이름을 등록해! (๑•̀ㅁ•́ฅ) /setmyname'
       ephemeral = true
     }
 
     const studying = await Studying.findOne({ discordId, onAir: true })
     if (studying) {
-      content = '이미 공부를 시작했어!'
+      content = '이미 공부를 시작했어! (๑•̀ㅁ•́ฅ)'
       ephemeral = true
     }
 
@@ -40,7 +40,7 @@ module.exports = {
         createdAt: new Date().toISOString(),
       }).save()
   
-      content = '공부 시작!'
+      content = '공부 시작! ฅ(๑˙o˙๑)ฅ'
       ephemeral = false
     }
 

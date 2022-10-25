@@ -28,7 +28,7 @@ module.exports = {
     let ephemeral;
     const studying = await Studying.findOne({ discordId, onAir: true })
     if (!studying) {
-      content = '먼저 공부를 시작해! /start'
+      content = '먼저 공부를 시작해! (๑•̀ㅁ•́ฅ) /start'
       ephemeral = true
     }
     if (studying) {
@@ -87,7 +87,7 @@ module.exports = {
 
 
       await Studying.findOneAndUpdate({ discordId, onAir: true }, { onAir: false })
-      content = '공부 끝! 고생했어'
+      content = '공부 끝! 고생했어 (ฅ•.•ฅ)'
       ephemeral = false
     }
     await interaction.deferReply({ 
