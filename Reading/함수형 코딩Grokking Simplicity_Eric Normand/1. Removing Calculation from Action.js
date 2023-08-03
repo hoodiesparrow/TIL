@@ -1,46 +1,58 @@
-let shoppingCart = []
-let shoppingCartTotal = 0
+let shoppingCart = [];
+let shoppingCartTotal = 0;
 
 function addItem({ name, price, cart }) {
-  let newCart = cart.slice() // 인자를 통해 받고 객체를 복사 - Copy On Write, cart를 직접 수정한다면 같은 전역변수가 수정됨.
-  newCart.push({ name, price })
-  return newCart
+  let newCart = cart.slice(); // 인자를 통해 받고 객체를 복사 - Copy On Write, cart를 직접 수정한다면 같은 전역변수가 수정됨.
+  newCart.push({ name, price });
+  return newCart;
 }
 
 function addItemToCart({ name, price }) {
-  shoppingCart = addItem({ name, price, cart: shoppingCart }) // 암묵적 입출력 제거
-  calcCartTotal()
+  shoppingCart = addItem({ name, price, cart: shoppingCart }); // 암묵적 입출력 제거
+  calcCartTotal();
 }
 
 function calcTotal(cart) {
-  let total = 0
+  let total = 0;
   for (let i = 0; i < cart.length; i += 1) {
-    const item = cart[i]
-    total += item.price
+    const item = cart[i];
+    total += item.price;
   }
-  return total
+  return total;
 }
 
 function calcCartTotal() {
-  shoppingCartTotal = calcTotal(shoppingCart)
-  setCartTotalDom()
-  updateShippingIcons()
-  updateTaxDom()
+  shoppingCartTotal = calcTotal(shoppingCart);
+  setCartTotalDom();
+  updateShippingIcons();
+  updateTaxDom();
+}
+
+function gets_free_shipping({ price, total }) {
+  return price + total >= 20;
 }
 
 function updateShippingIcons() {
-  const buyBtns = getBuyBtnsDom()
+  const buyBtns = getBuyBtnsDom();
   for (let i = 0; i < buyBtns.length; i += 1) {
-    const btn = buyBtns[i]
-    const item = button.item
-    if (item.price + shoppingCartTotal >= 20) {
-      btn.showFreeShippingIcon()
+    const btn = buyBtns[i];
+    const item = button.item;
+    if (gets_free_shipping({ price: item.price, total: shoppingCartTotal })) {
+      btn.showFreeShippingIcon();
     } else {
-      btn.hideFreeShippingIcon()
+      btn.hideFreeShippingIcon();
     }
   }
 }
 
-function updateTaxDom() {
-  setTaxDom(shoppingCartTotal * 0.1)
+function calc_tax(amount) {
+  return amount * 0.1;
 }
+
+function updateTaxDom() {
+  setTaxDom(calc_tax(shoppingCartTotal));
+}
+
+// 1. 계산 코드를 빼내기
+// 2. 새 함수에 암묵적 입력과 출력을 찾기
+// 3. 암묵적 입력은 인자로, 암묵적 출력은 리턴값으로 바꾸기
