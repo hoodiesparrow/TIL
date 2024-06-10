@@ -1,21 +1,20 @@
-class Department {
+abstract class Department {
   static fiscalYear = 2020;
   // private id: string;
   // private name: string;
   // private employees: string[] = []; only accessible in this particular class
-  protected employees: string[] = []; // can be accessed with extended classes
+  protected employees: string[] = []; // can be accessed from extended classes
 
-  constructor(private readonly id: string, public name: string) {
+  constructor(protected readonly id: string, public name: string) {
     // this.name = n;
+    // console.log(this.fiscalYear) error: static variables are detached(inaccessible) from instances.
   }
 
   static createEmployee(name: string) {
     return { name };
   }
 
-  describe(this: Department) {
-    console.log(`Department ${this.id}: ${this.name}`);
-  }
+  abstract describe(this: Department): void;
 
   addEmployee(employee: string) {
     // this.id = 'd2' => error: readonly
@@ -31,10 +30,15 @@ class ITDepartment extends Department {
   constructor(id: string, public admins: string[]) {
     super(id, "IT"); // calls parent class' constructor
   }
+
+  describe(): void {
+    console.log(`IT Department - ID: ${this.id}`);
+  }
 }
 
 class AccountingDepartment extends Department {
   private lastReport: string;
+  private static instance: AccountingDepartment;
 
   get mostRecentReport() {
     // getter should have return statement
@@ -48,9 +52,21 @@ class AccountingDepartment extends Department {
     this.addReport(value);
   }
 
-  constructor(id: string, private reports: string[]) {
+  private constructor(id: string, private reports: string[]) {
     super(id, "AC");
     this.lastReport = reports[0];
+  }
+
+  static getInstance() {
+    if (AccountingDepartment.instance) {
+      return this.instance;
+    }
+    this.instance = new AccountingDepartment("d2", []);
+    return this.instance;
+  }
+
+  describe() {
+    console.log(`Accounting Department - ID: ${this.id}`);
   }
 
   addEmployee(name: string) {
@@ -67,7 +83,9 @@ class AccountingDepartment extends Department {
     console.log(this.reports);
   }
 }
-const accounting = new AccountingDepartment("a1", []);
+// const accounting = new AccountingDepartment("a1", []);
+// singleton pattern -> private constructor
+const accounting = AccountingDepartment.getInstance();
 
 // const accountingCopy = { name: "DUMMY", describe: accounting.describe };
 // accountingCopy.describe(); // `name` property will be undefined,
@@ -91,3 +109,5 @@ console.log(accounting.mostRecentReport);
 // static
 const employee1 = Department.createEmployee("Max");
 console.log(employee1, Department.fiscalYear);
+
+// abstract classes cannot be instantiated
