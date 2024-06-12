@@ -1,22 +1,12 @@
 "use strict";
-let add;
-add = (n1, n2) => n1 + n2;
-class Person {
-    constructor(name) {
-        this.name = name;
-        this.age = 30;
+const e1 = {
+    name: "Max",
+    privileges: ["create-server"],
+    startDate: new Date(),
+};
+function add(a, b) {
+    if (typeof a === 'string' || typeof b === 'string') {
+        return a.toString() + b.toString();
     }
-    greet(phrase) {
-        if (this.name) {
-            console.log(`${phrase} ${this.name}`);
-        }
-        else {
-            console.log("hi");
-        }
-    }
+    return a + b;
 }
-let user1;
-user1 = new Person("Max");
-// user1.name = 'readonly in interace make this not modifiable'
-console.log(user1);
-const user2 = new Person();
